@@ -224,6 +224,30 @@ describe('expect', function() {
     });
   });
 
+  describe('.eq', function() {
+    it('delegates to QUnit.deepEqual', function() {
+      var deepEqualStub = sinon.stub(QUnit, 'deepEqual');
+      var actual = {actual: true};
+      var expected = {expected: true};
+      expect(actual).to.eq(expected);
+      deepEqualStub.restore();
+
+      expect(deepEqualStub.callCount).to.equal(1, 'deepEqual called once');
+      var args = deepEqualStub.firstCall.args;
+      expect(args[0]).to.equal(actual, 'actual matches');
+      expect(args[1]).to.equal(expected, 'expected matches');
+      expect(args[2]).to.equal(undefined);
+    });
+
+    it('takes an optional message argument', function() {
+      var deepEqualStub = sinon.stub(QUnit, 'deepEqual');
+      expect({a: 1}).to.eq({a: 1}, 'keys and values match');
+      deepEqualStub.restore();
+
+      expect(deepEqualStub.firstCall.args[2]).to.equal('keys and values match');
+    });
+  });
+
   describe('.defined', function() {
     it('delegates to QUnit.push by comparing to null and undefined', function() {
       var pushStub = sinon.stub(QUnit, 'push');
